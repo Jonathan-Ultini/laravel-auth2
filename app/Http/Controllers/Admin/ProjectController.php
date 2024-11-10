@@ -27,17 +27,26 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.projects.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProjectRequest $request)
+    public function store(Request $request)
     {
-        Project::create($request->validated());
-        return redirect()->route('admin.projects.index')->with('success', 'Progetto creato con successo');
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'link' => 'required|url',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+        ]);
+
+        Project::create($validated);
+
+        return redirect()->route('admin.projects.index')->with('success', 'Progetto creato con successo!');
     }
+
 
     /**
      * Display the specified resource.
